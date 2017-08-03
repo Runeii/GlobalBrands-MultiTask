@@ -3,8 +3,8 @@
     <div class="live" v-if="editing == false">
       <h1>J{{this.job.id}} {{job.title}}</h1>
       <p>Created by: {{job.createdby | idToName}}</p>
-      <p>Deadline: {{job.needby | moment('Do MMM YY')}}</p>
-      <p>Last updated by {{job.updatedby | idToName}}, {{job.updatedon | moment('Do MMMM [at] HH:mm')}} </p>
+      <p v-if="job.needby != null">Deadline: {{job.needby | moment('Do MMM YY')}}</p>
+      <p v-if="job.updatedby != null">Last updated by {{job.updatedby | idToName}}, {{job.updatedon | moment('Do MMMM [at] HH:mm')}} </p>
       <div class="description">
         <h2>Description</h2>
         <span v-html="job.description"></span>
@@ -19,7 +19,7 @@
       <h1>J{{job.id}}<input type="text" v-model="job.title"></input></h1>
       <p>Created by: {{job.createdby | idToName}}</p>
       <p>Deadline: <input type="date" v-model="job.needby"></input></p>
-      <p>Last updated by {{job.updatedby | idToName}}, {{job.updatedon | moment('Do MMMM [at] HH:mm')}} </p>
+      <p v-if="job.updatedby != null">Last updated by {{job.updatedby | idToName}}, {{job.updatedon | moment('Do MMMM [at] HH:mm')}} </p>
       <div class="description">
         <h2>Description</h2>
         <textarea rows="20" v-model="job.description"></textarea>

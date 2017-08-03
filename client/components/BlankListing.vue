@@ -38,8 +38,12 @@ export default {
       this.$router.push('/');
     },
     saveCreate: function(){
+      var router = this.$router;
+      this.job.createdon = new Date();
+      this.job.createdby = 5;
+      this.job.status_id = 1;
       this.$store.dispatch('savejob', this.job);
-  //    this.$router.push('/');
+      router.push('/');
     }
   }
 }

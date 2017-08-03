@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
+  me: {},
   users: {},
   listings: [],
   job: {},
@@ -15,6 +16,9 @@ const getters = {
 
 }
 const mutations = {
+  me(context, payload){
+    state.me = payload;
+  },
   users(context, payload){
     payload.forEach(function(user){
       Vue.set(state.users, user.id, user);
@@ -34,6 +38,16 @@ const mutations = {
 }
 
 const actions = {
+  login(context, details){
+    if(details.username != '' && details.password != '') {
+      return Vue.axios.put('http://localhost:8000/auth', details).then((response) => {
+        console.log(response);
+        context.commit('me', response.data);
+      });
+    } else {
+      return false;
+    }
+  },
   users(context){
     if(Object.keys(state.users).length == 0) {
       return Vue.axios.get('http://localhost:8000/users').then((response) => {
@@ -70,7 +84,7 @@ const actions = {
   //Save data
   savejob(context, job){
     return Vue.axios.put('http://localhost:8000/jobs/' + job.id, job).then((response) => {
-      console.log(response);
+      context.commit('job', {id: response.data.id, data: response.data});
     });
   }
 }
