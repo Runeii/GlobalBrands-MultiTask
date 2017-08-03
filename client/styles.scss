@@ -1,0 +1,143 @@
+$darkgrey: #E4E1E0;
+$grey: #F7F7F7;
+$back: #ffffff;
+$container: 952px;
+
+html {
+  font-size:14px;
+  line-height:1.45;
+}
+body {
+  font-size:14px;
+  font-family:Arial;
+  line-height:1.45;
+}
+header {
+  width:100%;
+  max-width:$container;
+  margin:0 auto;
+  img {
+    margin:3rem auto 5rem;
+    display: block;
+  }
+}
+.page {
+  width:100%;
+  max-width:$container;
+  margin:0 auto;
+}
+.index {
+  ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding:0;
+    li {
+      list-style: none;
+    }
+  }
+  table.listings {
+    width:100%;
+    border:1px solid $darkgrey;
+    border-collapse: collapse;
+    tr {
+      cursor: pointer;
+      border:1px solid $darkgrey;
+      &:hover {
+        background-color:$grey;
+      }
+    }
+    td {
+      padding:1rem;
+      text-align: right;
+    }
+    th {
+      background-color: $grey;
+      padding:1rem;
+      text-align: right;
+    }
+    .id {
+      border:1px solid $darkgrey;
+      background-color: $grey;
+      text-align: center;
+    }
+    .title {
+      font-weight:bold;
+      text-align: left;
+    }
+  }
+}
+
+.single {
+  width:100%;
+  .description {
+    white-space: pre-line;
+    width:100%;
+    border:1px solid $darkgrey;
+    padding:1rem 1rem 3rem;
+    h2 {
+      border-bottom:1px solid $darkgrey;
+      margin-top:0;
+    }
+    textarea {
+      width:100%;
+      height:100%;
+    }
+  }
+  input, textarea {
+    font-size:inherit;
+    font-weight:inherit;
+    &:not(:focus) {
+      border:none;
+      animation: edithum 2s infinite linear;
+    }
+  }
+  h1 {
+    input {
+      margin-left:0.25em;
+    }
+  }
+  .banner {
+    position: fixed;
+    bottom:0;
+    left:50%;
+    width:100%;
+    max-width: $container;
+    transform: translateX(-50%);
+    background-color:green;
+    color:white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding:2rem 0 2rem 2rem;
+    h2 {
+      margin-right:auto;
+    }
+    button {
+      background-color:transparent;
+      box-shadow:none;
+      border:4px solid white;
+      margin-right:2rem;
+      color:white;
+      padding:1rem;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+  }
+}
+
+@keyframes edithum {
+  0% {
+    color:black;
+  }
+  50% {
+    color: rgb(200,200,200);
+  }
+  100% {
+    color:black;
+  }
+}
