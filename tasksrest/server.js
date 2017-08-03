@@ -4,6 +4,7 @@ var prefix = 'wjtp_';
 const Hapi = require('hapi');
 const MySQL = require('mysql');
 const Joi = require('joi');
+const md5 = require('js-md5');
 
 const connection = MySQL.createConnection({
      host: 'localhost',
@@ -28,6 +29,41 @@ const server = new Hapi.Server();
 server.connection({
     host: 'localhost',
     port: 8000
+});
+
+//
+//AUTH
+// TODO: Improved login and auth system. This is simply to hook in to existing accounts and not anywhere ideal by any stretch
+//
+server.route({
+    method: 'PUT',
+    path: '/auth',
+    handler: function (request, reply) {
+      var payload = request.payload;
+      var pass = md5(salt + ':' + payload.password);
+      Knex(prefix + 'person').select(['id', 'username', 'firstname', 'lastname', 'email']).where( {
+        password: pass
+      }).then((columns) => {
+        reply(columns[0]);
+      }).catch(( err ) => {
+        reply('Server error: ' + err);
+      });
+    },
+   config: {
+    cors: {
+      origin: ['*'],
+      additionalHeaders: ['cache-control', 'x-requested-with']
+    },/*
+     validate: {
+       params: {
+         jobId: Joi.number().integer().required()
+      },
+      query: {
+         title: Joi.string().required(),
+         description: Joi.string(),
+       }
+     }*/
+   }
 });
 
 //
@@ -135,6 +171,7 @@ server.route({
 //
 // Save single job
 //
+var columns = ['id', 'title', 'description', 'createdby', 'createdon', 'assignedto', 'assignedon', 'updatedon', 'updatedby', 'completedon', 'completedby', 'closedon', 'closedby', 'status_id'];
 server.route({
     method: 'PUT',
     path: '/jobs/{jobId}',
@@ -148,20 +185,16 @@ server.route({
       payload.needby = new Date(payload.needby);
       if(payload.id === 'new') {
         delete payload['id'];
-        Knex(prefix + 'job').insert(payload).then((res) => {
-          reply({
-            message: 'Successfully inserted new job' + request.params.jobId
-          });
+        Knex(prefix + 'job').returning(columns).insert(payload).then((columns) => {
+          reply(columns);
         }).catch(( err ) => {
           reply('Server error: ' + err);
         });
       } else {
-        Knex(prefix + 'job').where( {
+        Knex(prefix + 'job').returning(columns).where( {
           id: request.params.jobId
-        }).insert(payload).then((res) => {
-          reply({
-            message: 'Successfully inserted new job' + request.params.jobId
-          });
+        }).update(payload).then((columns) => {
+          reply(columns);
         }).catch(( err ) => {
           reply('Server error: ' + err);
         });
