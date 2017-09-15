@@ -15,6 +15,7 @@ const app = new Vue({
   mounted(){
     this.$store.dispatch('users');
     this.$store.dispatch('statuses');
+    this.$store.dispatch('login', {username: 'ClayCreative', password: 'globalb2017?'});
   }
 })
 

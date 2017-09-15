@@ -40,7 +40,7 @@ const mutations = {
 const actions = {
   login(context, details){
     if(details.username != '' && details.password != '') {
-      return Vue.axios.put('http://localhost:8000/auth', details).then((response) => {
+      return Vue.axios.put('http://rest.globalbrands.co.uk/auth', details).then((response) => {
         console.log(response);
         context.commit('me', response.data);
       });
@@ -50,7 +50,7 @@ const actions = {
   },
   users(context){
     if(Object.keys(state.users).length == 0) {
-      return Vue.axios.get('http://localhost:8000/users').then((response) => {
+      return Vue.axios.get('http://rest.globalbrands.co.uk/users').then((response) => {
         context.commit('users', response.data);
       });
     } else {
@@ -58,13 +58,14 @@ const actions = {
     }
   },
   listings(context, filter){
-    return Vue.axios.get('http://localhost:8000/jobs', {params: filter}).then((response) => {
+    return Vue.axios.get('http://rest.globalbrands.co.uk/jobs', {params: filter}).then((response) => {
+      console.log(response);
       context.commit('listings', response.data);
     });
   },
   job(context, id){
     if(!(id in state.job)) {
-      return Vue.axios.get('http://localhost:8000/jobs/' + id).then((response) => {
+      return Vue.axios.get('http://rest.globalbrands.co.uk/jobs/' + id).then((response) => {
         context.commit('job', {id: id, data: response.data});
       });
     } else {
@@ -73,7 +74,7 @@ const actions = {
   },
   statuses(context){
     if(Object.keys(state.statuses).length == 0) {
-      return Vue.axios.get('http://localhost:8000/statuses').then((response) => {
+      return Vue.axios.get('http://rest.globalbrands.co.uk/statuses').then((response) => {
         context.commit('statuses', response.data);
       });
     } else {
@@ -83,7 +84,7 @@ const actions = {
 
   //Save data
   savejob(context, job){
-    return Vue.axios.put('http://localhost:8000/jobs/' + job.id, job).then((response) => {
+    return Vue.axios.put('http://rest.globalbrands.co.uk/jobs/' + job.id, job).then((response) => {
       context.commit('job', {id: response.data.id, data: response.data});
     });
   }

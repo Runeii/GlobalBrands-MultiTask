@@ -71,7 +71,7 @@ header {
 
 .single {
   width:100%;
-  .description {
+  .edit, .live {
     white-space: pre-line;
     width:100%;
     border:1px solid $darkgrey;
@@ -79,13 +79,16 @@ header {
     h2 {
       border-bottom:1px solid $darkgrey;
       margin-top:0;
+      &.description {
+        border-bottom:none;
+      }
     }
     textarea {
       width:100%;
       height:100%;
     }
   }
-  input, textarea {
+  input, textarea, select, option {
     font-size:inherit;
     font-weight:inherit;
     &:not(:focus) {
@@ -97,6 +100,9 @@ header {
     input {
       margin-left:0.25em;
     }
+  }
+  .content {
+
   }
   .banner {
     position: fixed;

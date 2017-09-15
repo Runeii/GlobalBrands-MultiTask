@@ -30,7 +30,6 @@ server.connection({
     host: 'localhost',
     port: 8000
 });
-
 //
 //AUTH
 // TODO: Improved login and auth system. This is simply to hook in to existing accounts and not anywhere ideal by any stretch
@@ -40,6 +39,7 @@ server.route({
     path: '/auth',
     handler: function (request, reply) {
       var payload = request.payload;
+      var salt = 'geronimo';
       var pass = md5(salt + ':' + payload.password);
       Knex(prefix + 'person').select(['id', 'username', 'firstname', 'lastname', 'email']).where( {
         password: pass
@@ -73,13 +73,23 @@ server.route({
     method: 'GET',
     path: '/jobs',
     handler: function (request, reply) {
-      const limit = request.query.limit || 20;
+      const limit = request.query.limit || false;
       const status = request.query.status || false;
-      var query = 'SELECT * FROM ' + prefix + 'job ';
+      const page = ((request.query.page - 1) * limit) || 0;
+      var query = 'SELECT * FROM ' + prefix + 'job';
       if(status) {
-        query += 'WHERE status_id = ' + status + ' ';
+        query += ' WHERE status_id = ' + status;
+      } else {
+        query += ' WHERE status_id != 6';
       }
-      query += 'ORDER BY id DESC LIMIT ' + limit;
+      if(limit) {
+        query += ' ORDER BY id DESC LIMIT ' + limit;
+      } else {
+        query += ' ORDER BY id DESC';
+      }
+      if(page > 0) {
+        query += ' OFFSET ' + page;
+      }
       connection.query(query,
       function (error, results, fields) {
         if (error) throw error;
@@ -94,7 +104,8 @@ server.route({
      validate: {
        query: {
          limit: Joi.number().integer(),
-         status: Joi.number().integer()
+         status: Joi.number().integer(),
+         page: Joi.number().integer()
        }
      }
    }

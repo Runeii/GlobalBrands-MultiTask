@@ -6,14 +6,15 @@
     <ul>
       <li>By status
         <select v-model="currentstatus">
-          <option v-for="status in statuses" v-bind:value="status.id">{{status.description}}</option>
+          <option value="0">Show all</option>
+          <option v-for="status in statuses" v-bind:value="status.id" v-if="status.id != 6">{{status.description}}</option>
         </select>
       </li>
       <li>
         <input v-model="filter" class="form-control" placeholder="Filter jobs by title">
       </li>
-      <li>Jump to page
-        <select>
+      <li v-if="page">Jump to page
+        <select v-model="page">
           <option v-for="n in pages" v-bind:value="n">{{n}}</option>
         </select>
       </li>
@@ -43,9 +44,9 @@ export default {
   data() {
     return {
       currentstatus: 2,
-      perpage: 100,
+      perpage: false,
       filter: '',
-      offset: 1,
+      page: false,
       sortKey: 'createdon',
       reverse: false,
       columns: ['id', 'title', 'createdby', 'createdon', 'assignedto', 'status_id'],
@@ -68,17 +69,21 @@ export default {
     },
     filteredAndSortedListings: function () {
       let result = this.$store.state.listings;
+      let searchfilter = false;
       if(this.filter) {
-        let searchfilter = this.filter.toLowerCase();
-        result = result.filter(function(item){
-          let title = item.title.toLowerCase();
-          if(title.includes(searchfilter)){
-            return true;
-          } else {
-            return false;
-          }
-        });
+         searchfilter = this.filter.toLowerCase();
       }
+      let searchstatus = this.currentstatus;
+      console.log(this.currentstatus);
+      //We now iterate over each item and match against each filter/category etc
+      result = result.filter(function(item){
+        let title = item.title.toLowerCase();
+        if((item.status_id == searchstatus || searchstatus == 0) && (searchfilter == false || title.includes(searchfilter)) ){
+          return true;
+        } else {
+          return false;
+        }
+      });
       return result;
     }
   },
@@ -107,9 +112,6 @@ export default {
     },
     updateListings: function(){
       var filter = {
-        limit: this.perpage,
-      //  offset: this.offset,
-        status: this.currentstatus
       }
       this.$store.dispatch('listings', filter)
     },
@@ -122,7 +124,7 @@ export default {
     }
   },
   watch: {
-    currentstatus: function (newstatus) {
+    page: function() {
       this.updateListings()
     }
   }
